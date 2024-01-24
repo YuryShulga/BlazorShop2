@@ -44,8 +44,8 @@ app.UseRouting();
 
 app.MapBlazorHub();
 
-app.Map("/email_sender_api/{receiver_email}/{subject}/{htmlBody}/{senderName}",
-    (string receiver_email,
+app.Map("/email_sender_api",
+    (string receiverEmail,
     string subject,
     string htmlBody,
     string senderName,
@@ -53,9 +53,14 @@ app.Map("/email_sender_api/{receiver_email}/{subject}/{htmlBody}/{senderName}",
 {
 
     // return sender.SendEmailApi(receiver_email, subject, htmlBody, senderName);
-    return Task.FromResult( "i'm here");
+    return  "i'm here";
 });
+app.Map("/some", SomeFunc);
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+string SomeFunc() {
+    return "qdasdfsadf";
+}
 
