@@ -1,0 +1,4 @@
+﻿ dotnet user-secrets init - инициализация secrets
+ otnet user-secrets set "Port" 25 - добавление секрета
+ dotnet user-secrets list - вывод списка секретов
+ dotnet user-secrets remove "DatabaseConnection" - удалить секрет

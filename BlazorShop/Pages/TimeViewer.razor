@@ -1,0 +1,40 @@
+﻿@page "/timeViewer"
+@using BlazorShop.Models
+@inject IClock Clock
+
+<h3>TimeViewer</h3>
+
+<h4>Вывод времени с помощью абстракции ITime:</h4>
+<p>
+    public interface ITime
+    <br />
+    {
+    <br />
+    public DateTime GetTime();
+    <br />
+    }
+</p>
+<h4>использую реализацию, предоставляющую текущее время во временной зоне UTC, UTCTime:</h4>
+<p>
+    public class UTCTime : ITime
+    <br />
+    {
+    <br />
+    public DateTime GetTime()
+    <br />
+    {
+    <br />
+    return DateTime.UtcNow;
+    <br />
+    }
+    <br />
+    }
+</p>
+
+<h3>вывод времени: @Clock.GetTimeUtc().TimeOfDay</h3>
+
+
+
+@code {
+    
+}

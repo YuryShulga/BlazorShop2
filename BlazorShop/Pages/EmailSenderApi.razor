@@ -1,0 +1,39 @@
+﻿@page "/email_sender_api/{reciver_name}/{reciver_email}/{subject}/{letter}"
+@using BlazorShop.Models
+@inject IEmailSender EmailSender
+<h3>EmailSenderApi</h3>
+
+
+@code {
+    private SendEmailDataModel _emailModel = new();
+    private string _sendResult = "";
+
+    int _attemptToSend = 0;
+    private async Task OnSendMessage()
+    {
+        _attemptToSend++;
+        Logger.LogInformation("Попытка отправки имейла на адрес {Email}", _emailModel.letterEmailAdress);
+
+        try //Вариант 1.
+        {
+            await EmailSender.SendEmail(_emailModel.letterEmailAdress, _emailModel.letterSubject, _emailModel.letterBody);
+            _emailModel = new();
+            _sendResult = "письмо отправлено";
+        }
+        catch (Exception e) when (_attemptToSend == 1
+                                  && e is ServiceNotAuthenticatedException
+                                        or ServiceNotConnectedException
+                                        //...
+                                        )
+        {
+            Logger.LogWarning(e, "Ошибка отправки имейла на адрес {Email}. Делаем еще одну попытку", _emailModel.letterEmailAdress, e.Message);
+            await OnSendMessage(); //retry
+        }
+        catch (Exception e) // Если это последняя попытка, то логируем ошибку и выводим сообщение об ошибке.
+        {
+            // Даем разработчику явно понять, что произошла ошибка, и что нужно что-то делать.
+            Logger.LogError(e, "Ошибка отправки имейла на адрес {Email}. Ошибка: {Error}", _emailModel.letterEmailAdress, e.Message);
+            _sendResult = "Ошибка отправки письма";
+        }
+    }
+}

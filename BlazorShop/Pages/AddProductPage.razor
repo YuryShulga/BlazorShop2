@@ -1,0 +1,41 @@
+﻿@page "/add_product"
+@using BlazorShop.Models
+@inject ICatalog Catalog
+
+<h3>@_pageTitle</h3>
+
+<EditForm Model="@_model" OnValidSubmit="AddProduct">
+    <DataAnnotationsValidator />
+    <br />
+    Название продукта: <InputText @bind-Value="_model.Name" />
+    <br />
+    <br />
+    Цена: <InputNumber  @bind-Value="_model.Price"/>
+    <br />
+    <ValidationSummary />
+    <br />
+    <br /> <input type="submit" value="Добавить">
+   
+</EditForm>
+
+
+@code {
+
+    private string _pageTitle = "Добавление нового продукта в базу";
+    private string _errorMessage = "";
+    private Product _model = new();
+    //private Product _model = new();
+    private async Task AddProduct()
+    {
+        //Catalog.A(new Product {Name = _model.Name, Price = _model.Price});
+        _model = new();
+    }
+    public class StringProductModel
+    {
+
+        public string Name { get; set; }
+
+        public string Price { get; set; }
+
+    }
+}

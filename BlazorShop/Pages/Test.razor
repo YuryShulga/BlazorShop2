@@ -1,0 +1,27 @@
+﻿@page "/test"
+@using BlazorShop.Models
+@using Microsoft.Extensions.Options
+@using Microsoft.Extensions.Configuration
+@inject IOptions<EmailMessageAutorizationModel> Options
+@inject ILogger<Test> Logger;
+@inject IConfiguration configuration
+
+<h3>Test</h3>
+<div>SmtpServer: @smtpServer</div>
+@* <div>login: @_emailParams.Login</div>
+<div>parol: @_emailParams.Parol</div> *@
+<div>port: @_emailParams.Port</div>
+<button @onclick="ButtonClick">Click</button>
+
+@code {
+
+	private EmailMessageAutorizationModel _emailParams = new();
+	private string smtpServer = "11";
+	public void ButtonClick()
+	{
+		Logger.LogInformation("вывод параметров params.json {Options.value}", Options.Value);
+		_emailParams = Options.Value;
+		smtpServer = configuration["SmtpServer"];
+		
+	}
+}

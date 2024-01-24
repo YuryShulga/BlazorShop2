@@ -1,0 +1,72 @@
+﻿@* @page "/"
+
+@inject ILogger<Index> Logger
+@implements IDisposable
+
+<PageTitle>Главная страница</PageTitle>
+
+<h1>Добро пожаловать в интернет магазин "Online shop"</h1>
+
+
+<p>текущее местное время: @_time</p>
+
+@code {
+    private DateTime _time;
+    private PeriodicTimer? _timer;
+
+    protected override void OnInitialized()
+    {
+        _time = DateTime.Now;
+        base.OnInitialized();
+        Updatetime();
+
+    }
+    async Task Updatetime()
+    {
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        while (await _timer.WaitForNextTickAsync())
+        {
+            _time = DateTime.Now;
+            StateHasChanged();
+
+        }
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+} *@
+
+@page "/"
+
+<PageTitle>Главная страница</PageTitle>
+
+<h1>Добро пожаловать в интернет магазин "Online shop"</h1>
+
+<p>текущее местное время: @_time</p>
+
+@code {
+    private DateTime _time;
+    private Timer _timer;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _time = DateTime.Now;
+        _timer = new Timer(UpdateTime, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+       
+    }
+
+    private void UpdateTime(object state)
+    {
+        _time = DateTime.Now;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}
