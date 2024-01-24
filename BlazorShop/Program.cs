@@ -43,12 +43,19 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
+
+app.Map("/email_sender_api/{receiver_email}/{subject}/{htmlBody}/{senderName}",
+    (string receiver_email,
+    string subject,
+    string htmlBody,
+    string senderName,
+    IEmailSender sender) => 
+{
+
+    // return sender.SendEmailApi(receiver_email, subject, htmlBody, senderName);
+    return Task.FromResult( "i'm here");
+});
 app.MapFallbackToPage("/_Host");
-app.Map("/email_sender_api/{reciver_name}/{reciver_email}/{subject}/{letter}", );
 
 app.Run();
 
-string EmailSenderApi() 
-{
-    return "";
-}

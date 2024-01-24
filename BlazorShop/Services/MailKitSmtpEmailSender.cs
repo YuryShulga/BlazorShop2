@@ -1,5 +1,7 @@
 ﻿using BlazorShop.Models;
+using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
@@ -17,8 +19,9 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
     private readonly IOptions<EmailMessageAutorizationModel> _options;
 
     private readonly IConfiguration _configuration;
+    private int _attemptToSend = 0;
 
-	public MailKitSmtpEmailSender(
+    public MailKitSmtpEmailSender(
         ILogger<MailKitSmtpEmailSender> logger,
         IOptions<EmailMessageAutorizationModel> options,
 		IConfiguration configuration)
@@ -28,13 +31,13 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
         _configuration = configuration;
     }
     
-    public async Task SendEmail(string recieverEmail, string subject, string htmlBody, string senderName = "MyShop")
+    public async Task SendEmail(string receiverEmail, string subject, string htmlBody, string senderName = "MyShop")
     {
-        _logger.LogInformation("Sending email to {Email} with subject {Subject}", recieverEmail, subject);
+        _logger.LogInformation("Sending email to {Email} with subject {Subject}", receiverEmail, subject);
         
         using var emailMessageToSend = new MimeMessage();
         emailMessageToSend.From.Add(new MailboxAddress(senderName, _configuration["Login"]));
-        emailMessageToSend.To.Add(new MailboxAddress("", recieverEmail));
+        emailMessageToSend.To.Add(new MailboxAddress("", receiverEmail));
         emailMessageToSend.Subject = subject;
         emailMessageToSend.Body = new TextPart(TextFormat.Html)
         {
@@ -43,6 +46,35 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
 
         await EnsureConnectedAndAuthed();
         await _client.SendAsync(emailMessageToSend);
+    }
+
+    public async Task<string> SendEmailApi(string receiverEmail, string subject, string htmlBody, string senderName = "MyShop")
+    {
+
+        _attemptToSend++;
+        _logger.LogInformation("Попытка отправки имейла на адрес {Email}", receiverEmail);
+
+        try //Вариант 1.
+        {
+            await SendEmail(receiverEmail, subject, htmlBody, senderName);
+            return "письмо отправлено";
+        }
+        catch (Exception e) when (_attemptToSend == 1
+                                  && e is ServiceNotAuthenticatedException
+                                        or ServiceNotConnectedException
+                                        //...
+                                        )
+        {
+            _logger.LogWarning(e, "Ошибка отправки имейла на адрес {Email}. Делаем еще одну попытку", receiverEmail, e.Message);
+            await SendEmailApi(receiverEmail, subject, htmlBody, senderName); //retry
+            return "Ошибка отправки письма";
+        }
+        catch (Exception e) // Если это последняя попытка, то логируем ошибку и выводим сообщение об ошибке.
+        {
+            // Даем разработчику явно понять, что произошла ошибка, и что нужно что-то делать.
+            _logger.LogError(e, "Ошибка отправки имейла на адрес {Email}. Ошибка: {Error}", receiverEmail, e.Message);
+            return  "Ошибка отправки письма";
+        }
     }
 
     private async Task EnsureConnectedAndAuthed()

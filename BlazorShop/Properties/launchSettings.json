@@ -26,6 +26,16 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "emailSenderApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "/email_sender_api/yshulga9@gmail.com/Hello/BodyText/Sender/",
+      "applicationUrl": "https://localhost:7083;http://localhost:5127",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "https prod": {
       "commandName": "Project",
       "dotnetRunMessages": true,
