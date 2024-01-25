@@ -16,18 +16,18 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
     
     private readonly ILogger<MailKitSmtpEmailSender> _logger;
 
-    private readonly IOptions<EmailMessageAutorizationModel> _options;
+    //private readonly IOptions<EmailMessageAutorizationModel> _options;
 
     private readonly IConfiguration _configuration;
     private int _attemptToSend = 0;
 
     public MailKitSmtpEmailSender(
         ILogger<MailKitSmtpEmailSender> logger,
-        IOptions<EmailMessageAutorizationModel> options,
+        //IOptions<EmailMessageAutorizationModel> options,
 		IConfiguration configuration)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _options = options;
+        //_options = options;
         _configuration = configuration;
     }
     
@@ -81,7 +81,8 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
     {
         if (!_client.IsConnected)
         {
-            await _client.ConnectAsync(_options.Value.SmtpServer, _options.Value.Port, false);
+//            await _client.ConnectAsync(_options.Value.SmtpServer, _options.Value.Port, false);
+            await _client.ConnectAsync(_configuration["SmtpServer"], int.Parse(_configuration["Port"]), false);
         }
         if (!_client.IsAuthenticated)
         {

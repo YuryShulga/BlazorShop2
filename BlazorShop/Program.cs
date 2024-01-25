@@ -22,9 +22,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddScoped<ICatalog, EfCatalog>();
 
-builder.Configuration.AddJsonFile("params.json"); 
+//builder.Configuration.AddJsonFile("params.json"); 
 // устанавливаем объект EmailMessageAutorizationModel по настройкам из конфигурации
-builder.Services.Configure<EmailMessageAutorizationModel>(builder.Configuration);
+//builder.Services.Configure<EmailMessageAutorizationModel>(builder.Configuration);
 
 var app = builder.Build();
 
@@ -45,18 +45,15 @@ app.UseRouting();
 app.MapBlazorHub();
 
 app.Map("/email_sender_api",
-    (string receiver_email,
+    async (string receiver_email,
     string subject,
     string html_body,
     string sender_name,
     IEmailSender sender
-    ) => {return sender.SendEmailApi(receiver_email, subject, html_body, sender_name);});
-app.Map("/some", SomeFunc);
+    ) => {return await sender.SendEmailApi(receiver_email, subject, html_body, sender_name);});
 app.MapFallbackToPage("/_Host");
 
 app.Run();
 
-string SomeFunc() {
-    return "qdasdfsadf";
-}
+
 
