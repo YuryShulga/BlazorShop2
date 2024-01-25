@@ -45,16 +45,12 @@ app.UseRouting();
 app.MapBlazorHub();
 
 app.Map("/email_sender_api",
-    (string receiverEmail,
+    (string receiver_email,
     string subject,
-    string htmlBody,
-    string senderName,
-    IEmailSender sender) => 
-{
-
-    // return sender.SendEmailApi(receiver_email, subject, htmlBody, senderName);
-    return  "i'm here";
-});
+    string html_body,
+    string sender_name,
+    IEmailSender sender
+    ) => {return sender.SendEmailApi(receiver_email, subject, html_body, sender_name);});
 app.Map("/some", SomeFunc);
 app.MapFallbackToPage("/_Host");
 
