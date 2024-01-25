@@ -4,6 +4,7 @@ using BlazorShop.Models;
 using BlazorShop.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 Console.OutputEncoding = Encoding.UTF8;
 
@@ -22,9 +23,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddScoped<ICatalog, EfCatalog>();
 
-//builder.Configuration.AddJsonFile("params.json"); 
-// устанавливаем объект EmailMessageAutorizationModel по настройкам из конфигурации
-//builder.Services.Configure<EmailMessageAutorizationModel>(builder.Configuration);
+// Настройка Serilog
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Console()
+	.WriteTo.File("log.txt")
+	.CreateLogger();
+builder.Services.AddLogging(loggingBuilder => { loggingBuilder.AddSerilog(); });
+
+
 
 var app = builder.Build();
 

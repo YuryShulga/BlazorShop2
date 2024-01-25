@@ -81,12 +81,13 @@ public class MailKitSmtpEmailSender : IEmailSender, IAsyncDisposable
     {
         if (!_client.IsConnected)
         {
-//            await _client.ConnectAsync(_options.Value.SmtpServer, _options.Value.Port, false);
+
             await _client.ConnectAsync(_configuration["SmtpServer"], int.Parse(_configuration["Port"]), false);
         }
         if (!_client.IsAuthenticated)
         {
             await _client.AuthenticateAsync(_configuration["Login"], _configuration["Parol"]);
+            //await _client.AuthenticateAsync("_configuration[", _configuration["Parol"]);
         }
     }
 

@@ -2,3 +2,5 @@
  otnet user-secrets set "Port" 25 - добавление секрета
  dotnet user-secrets list - вывод списка секретов
  dotnet user-secrets remove "DatabaseConnection" - удалить секрет
+
+ читаю материал по заданию со звездочкой

@@ -1,0 +1,12 @@
+﻿@page "/test"
+@inject Microsoft.Extensions.Logging.ILogger<Test> Logger
+<h3>Test</h3>
+<button @onclick="ButtonClick">Text</button>
+
+@code {
+
+	private void ButtonClick()
+	{
+		Logger.LogInformation("ButtonTest clicked");
+	}
+}
